@@ -33,3 +33,24 @@ u_int64_t get_counter()
 
 }
 
+u_int64_t inactive_periods(int num, u_int64_t threshold, u_int_64_t *samples){
+	int idx;
+	//initialize the readings
+	u_int64_t initial_reading, prev_reading, current_reading;
+
+	start_counter();	
+	initial_reading = prev_reading = current_reading = get_counter();
+	
+	for(idx=0; idx < num;){
+		prev_reading = current_reading;
+		current_reading = get_counter;
+		
+		if((current_reading - prev_reading) >= threshold){
+			samples[idx] = current_reading;	
+			idx++;	
+		}
+	}
+	
+
+	return initial_reading;
+}
