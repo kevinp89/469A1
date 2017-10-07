@@ -1,6 +1,6 @@
 OUT = report
 
-${OUT}.pdf: ${OUT}.tex
+pdf: ${OUT}.tex
 	pdflatex $^
 
 clean:
