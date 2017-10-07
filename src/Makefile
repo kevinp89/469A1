@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -g -Wall
+CFLAGS = -Wall
 SRC_DIR = ./src
 
 p1: main.c tsc.c tsc.h
