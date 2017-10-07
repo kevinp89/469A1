@@ -8,4 +8,4 @@ p1: main.c tsc.c tsc.h
 all: p1
 
 clean:
-	rm p1
+	rm -f p1
