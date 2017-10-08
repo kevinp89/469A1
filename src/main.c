@@ -68,9 +68,9 @@ int main(int argc, char *argv[])
 	sleep_timer.tv_nsec = 1000000L; // 1 milisecond
 	
 	//int count_miliseconds = 0;
-	long int samples[6];	
+	double samples[6];	
 	int i;
-	long int min = INT_MAX;
+	double min = INT_MAX;
 	for(i=0; i<6; i++){
 		start_counter();
 		if(nanosleep(&sleep_timer, NULL) == 0){
@@ -82,12 +82,12 @@ int main(int argc, char *argv[])
 
 	int j;
 	for(j=0; j<6; j++){
-		printf("sample[%d]: %ld\n", j, samples[j]);	
+		printf("sample[%d]: %f\n", j, samples[j]);	
 	}
 	
-	double cpu_hz = (min / 1e9);
-	printf("min: %ld\n", min);
-	printf("cpu: %fHz\n", cpu_hz * 1e6); 
+	double cpu_hz = (min / 1e6) * 1e9;
+	printf("min: %f\n", min);
+	printf("cpu: %fMHz\n", cpu_hz/1e6); 
 	
 	printf("given num inactive: %d\n", num_inactive);
     	/* u_int64_t samples[100]; */
