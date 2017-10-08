@@ -3,7 +3,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
-#include "tsc.h"
+#include "../tsc.h"
 
 int main(int argc, char *argv[])
 {
