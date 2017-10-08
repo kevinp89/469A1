@@ -30,6 +30,26 @@ u_int64_t inactive_periods(int num, u_int64_t threshold, u_int64_t *samples)
 	return initial_reading;
 }
 
+/**
+double get_freq(){
+
+	int count = 1;
+	double cmeas=0;
+	double cycles;
+	
+	int CMIN = 50000;
+	do{
+		start_counter();
+		
+		cmeas = get_counter();
+		cycles = cmeas / count;
+		count++;
+	
+	}while (cmeas < CMIN);
+
+	return cycles * 1e6;
+}
+**/
 int main(int argc, char *argv[])
 {
 
@@ -40,6 +60,7 @@ int main(int argc, char *argv[])
 		
 	int num_inactive = atoi(argv[1]);
 	
+
 	struct timespec sleep_timer;	
 	sleep_timer.tv_sec = 0;
 	sleep_timer.tv_nsec = 1000000L; // 1 milisecond
@@ -61,10 +82,10 @@ int main(int argc, char *argv[])
 		printf("sample[%d]: %ld\n", j, samples[j]);	
 	}
 	
-	long int cpu_hz = counter / 5;
+	double cpu_hz = counter / (1e6L);
 	printf("counter: %ld\n", counter);
-	printf("cpu: %.1ldGHz\n", cpu_hz/1000000L);
-
+	printf("cpu: %fMHz\n", cpu_hz/6); 
+	
 	printf("given num inactive: %d\n", num_inactive);
     	/* u_int64_t samples[100]; */
    	// inactive_periods(num_inactive,0, 0);
