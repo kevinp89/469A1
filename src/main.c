@@ -5,7 +5,9 @@
 #include <time.h>
 #include <sys/time.h>
 #include <stdint.h>
+#include <limits.h>
 #include "tsc.h"
+
 
 u_int64_t inactive_periods(int num, u_int64_t threshold, u_int64_t *samples)
 {
@@ -68,12 +70,13 @@ int main(int argc, char *argv[])
 	//int count_miliseconds = 0;
 	long int samples[6];	
 	int i;
-	long int counter = 0;
+	long int min = INT_MAX;
 	for(i=0; i<6; i++){
 		start_counter();
 		if(nanosleep(&sleep_timer, NULL) == 0){
 			samples[i] = get_counter();
-			counter += samples[i];
+			if(samples[i] < min)
+				min = samples[i];
 		}	
 	}	
 
@@ -82,9 +85,9 @@ int main(int argc, char *argv[])
 		printf("sample[%d]: %ld\n", j, samples[j]);	
 	}
 	
-	double cpu_hz = counter / (1e6L);
-	printf("counter: %ld\n", counter);
-	printf("cpu: %fMHz\n", cpu_hz/6); 
+	double cpu_hz = (min / 1e9);
+	printf("min: %ld\n", min);
+	printf("cpu: %fHz\n", cpu_hz * 1e6); 
 	
 	printf("given num inactive: %d\n", num_inactive);
     	/* u_int64_t samples[100]; */
