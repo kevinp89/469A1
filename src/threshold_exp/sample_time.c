@@ -13,12 +13,11 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    printf("# SUCCESSIVE SAMPLES\n");
     int num = atoi(argv[1]);
     u_int64_t *samples = malloc(sizeof(*samples) * num * 2);
     inactive_periods(num, 0, samples);
     
-    printf("start\tend\tdiff\n");
+    printf("start\tend\ttotal_cycles\n");
     for (int i = 0; i < num; i++) {
         printf("%lu\t%lu\t%lu\n", samples[2*i], samples[2*i+1], samples[2*i+1] - samples[2*i]);
     }
