@@ -59,6 +59,7 @@ int main(int argc, char *argv[])
 	int num_inactive = args.inactive_periods;
 	u_int64_t *samples = malloc(sizeof(*samples) * num_inactive * 2);
 	double hz = calc_cpu_freq(6, 10000000L /* 10 ms */);
+	// 10000 based on results from testing caches (threshold experiment)
 	u_int64_t active_start = inactive_periods(num_inactive, 10000, samples);
 	show_periods(num_inactive, samples, hz, active_start);
 
