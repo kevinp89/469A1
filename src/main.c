@@ -9,66 +9,46 @@
 #include "tsc.h"
 #include "periods.h"
 
+double calc_cpu_freq(int num_samples)
+{
+	struct timespec sleep_timer;
+	sleep_timer.tv_sec = 0;
+	sleep_timer.tv_nsec = 10000000L; // 10 milisecond
 
-/**
-double get_freq(){
-
-	int count = 1;
-	double cmeas=0;
-	double cycles;
-	
-	int CMIN = 50000;
-	do{
+	double samples[num_samples];
+	for(int i = 0; i < num_samples; i++){
 		start_counter();
-		
-		cmeas = get_counter();
-		cycles = cmeas / count;
-		count++;
-	
-	}while (cmeas < CMIN);
+		if(nanosleep(&sleep_timer, NULL) == 0) {
+			samples[i] = get_counter();
+        } else {
+            perror("Error nano-sleeping");
+            exit(2);
+        }
+	}
 
-	return cycles * 1e6;
+	double min = samples[0];
+    for (int i = 0; i < num_samples; i++) {
+		printf("sample[%d]: %f\n", i, samples[i]);
+        min = min < samples[i]? min : samples[i];
+    }
+    printf("min: %f\n", min);
+
+	double cpu_hz = (min / sleep_timer.tv_nsec) * 1e9;
+	printf("cpu: %fMHz\n", cpu_hz / 1e6);
+    return cpu_hz;
 }
-**/
+
 int main(int argc, char *argv[])
 {
-
-        if(argc != 2){
-		fprintf(stderr, "Usage: ./main <number of inactive periods>\n");
-	   	exit(1);
+    if(argc != 2){
+		fprintf(stderr, "Usage: %s <number of inactive periods>\n", argv[0]);
+	   	return 1;
 	}
-		
-	int num_inactive = atoi(argv[1]);
-	
 
-	struct timespec sleep_timer;	
-	sleep_timer.tv_sec = 0;
-	sleep_timer.tv_nsec = 1000000L; // 1 milisecond
-	
-	//int count_miliseconds = 0;
-	double samples[6];	
-	int i;
-	double min = INT_MAX;
-	for(i=0; i<6; i++){
-		start_counter();
-		if(nanosleep(&sleep_timer, NULL) == 0){
-			samples[i] = get_counter();
-			if(samples[i] < min)
-				min = samples[i];
-		}	
-	}	
+	/* int num_inactive = atoi(argv[1]); */
 
-	int j;
-	for(j=0; j<6; j++){
-		printf("sample[%d]: %f\n", j, samples[j]);	
-	}
+    double hz = calc_cpu_freq(6);
+
 	
-	double cpu_hz = (min / 1e6) * 1e9;
-	printf("min: %f\n", min);
-	printf("cpu: %fMHz\n", cpu_hz/1e6); 
-	
-	printf("given num inactive: %d\n", num_inactive);
-    	/* u_int64_t samples[100]; */
-   	// inactive_periods(num_inactive,0, 0);
    	return 0;
 }
