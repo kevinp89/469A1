@@ -7,28 +7,17 @@
 
 int main(int argc, char *argv[])
 {
-    if (argc != 2) {
-        fprintf(stderr, "Usage: %s <num_pages>\n", argv[0]);
-        return 1;
-    }
+	int n = 1024 * 1024; /* 1MB */
+    char *block = malloc(n * sizeof(*block));
 
-    printf("# TLB MISS\n");
-
-    int page_size = getpagesize();
-    int pages = atoi(argv[1]);
-    char *block = malloc(sizeof(*block) * page_size * pages);
-    printf("# pagesize=%d\tallocated=%zu\n", page_size, sizeof(*block) * page_size * pages);
-
-    printf("byte\ttime\taddr\n");
-    u_int64_t t0, t1;
-    int target_byte;
-    start_counter();
-    for (int i = 0; i < pages; i++) {
-        target_byte = i*page_size;
-        t0 = get_counter();
-        block[target_byte] = 0;
+    u_int64_t t1;
+	int ri;
+    for (int i = 0; i < 15; i++) {
+		ri  = rand() % n;
+		start_counter();
+        block[ri] = 1;
         t1 = get_counter();
-        printf("%d\t%lu\t%p\n", target_byte, t1-t0, &(block[target_byte]));
+        printf("%d\t%lu\t%p\n", ri, t1, &(block[ri]));
     }
     return 0;
 }
