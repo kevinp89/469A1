@@ -1,0 +1,2 @@
+Timer interrupt frequency is 3.3 ms. 
+In linux config, CONFIG_HZ=300... 300 times per second => 1000ms/300 => 3.3 ms per interrupt
