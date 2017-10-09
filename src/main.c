@@ -1,42 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <sys/types.h>
-#include <time.h>
-#include <sys/time.h>
-#include <stdint.h>
-#include <limits.h>
 #include "tsc.h"
 #include "periods.h"
+#include "freq.h"
 
-double calc_cpu_freq(int num_samples, long ns_timeout)
-{
-	struct timespec sleep_timer;
-	sleep_timer.tv_sec = 0;
-	sleep_timer.tv_nsec = ns_timeout;
-
-	double samples[num_samples];
-	for(int i = 0; i < num_samples; i++){
-		start_counter();
-		if(nanosleep(&sleep_timer, NULL) == 0) {
-			samples[i] = get_counter();
-		} else {
-			perror("Error nano-sleeping");
-			exit(2);
-		}
-	}
-
-	double min = samples[0];
-	for (int i = 0; i < num_samples; i++) {
-		printf("sample[%d]: %f\n", i, samples[i]);
-		min = min < samples[i]? min : samples[i];
-	}
-	printf("min: %f\n", min);
-
-	double cpu_hz = (min / sleep_timer.tv_nsec) * 1e9;
-	printf("cpu: %fMHz\n", cpu_hz / 1e6);
-	return cpu_hz;
-}
 
 int main(int argc, char *argv[])
 {
@@ -45,9 +12,19 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
-	/* int num_inactive = atoi(argv[1]); */
-
+	int num_inactive = atoi(argv[1]);
+	u_int64_t *samples = malloc(sizeof(*samples) * num_inactive * 2);
 	double hz = calc_cpu_freq(6, 10000000L /* 10 ms */);
+	u_int64_t start_active = inactive_periods(num_inactive, 10000, samples);
+
+	u_int64_t start, end, duration;
+	for (int period = 0; period < num_inactive; period++) {
+		start = samples[2*period];
+		end = samples[2*period + 1];
+		duration = end - start;
+
+		printf("Inactive %d: start at %lu, duration %lu cycles (xxxxx)\n", period, start, duration);
+	}
 
 
 	return 0;

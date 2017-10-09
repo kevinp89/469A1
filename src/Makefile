@@ -3,8 +3,8 @@ CFLAGS = -Wall
 
 all: p1
 
-p1: main.c tsc.c tsc.h
-	$(CC) $(CFLAGS) -o $@ main.c tsc.c
+p1: main.c tsc.c periods.c freq.c
+	$(CC) $(CFLAGS) -o $@ $^
 
 clean:
 	rm -f p1
