@@ -10,7 +10,7 @@ u_int64_t inactive_periods(int num, u_int64_t threshold, u_int64_t *samples)
 
 	for (int idx = 0; idx < num;) {
 		curr = get_counter();
-		if ((curr - prev) > threshold){
+		if ((curr - prev) > threshold){ /* Changed: >= to > for e.g. 0 */
 			samples[2*idx] = prev;
 			samples[2*idx + 1] = curr;
 			idx++;
