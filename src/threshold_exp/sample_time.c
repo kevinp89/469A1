@@ -14,13 +14,15 @@ int main(int argc, char *argv[])
     }
 
     int num = atoi(argv[1]);
-    u_int64_t *samples = malloc(sizeof(*samples) * num * 2);
-    inactive_periods(num, 0, samples);
+	u_int64_t t0, t1;
     
     printf("start\tend\ttotal_cycles\n");
-    for (int i = 0; i < num; i++) {
-        printf("%lu\t%lu\t%lu\n", samples[2*i], samples[2*i+1], samples[2*i+1] - samples[2*i]);
-    }
+	start_counter();
+	for (int i = 0; i < num; i++) {
+		t0 = get_counter();
+		t1 = get_counter();
+		printf("%lu\t%lu\t%lu\n", t0, t1, t1-t0);
+	}
 
     return 0;
 }
