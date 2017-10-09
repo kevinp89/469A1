@@ -9,11 +9,11 @@
 #include "tsc.h"
 #include "periods.h"
 
-double calc_cpu_freq(int num_samples)
+double calc_cpu_freq(int num_samples, long ns_timeout)
 {
 	struct timespec sleep_timer;
 	sleep_timer.tv_sec = 0;
-	sleep_timer.tv_nsec = 10000000L; // 10 milisecond
+	sleep_timer.tv_nsec = ns_timeout;
 
 	double samples[num_samples];
 	for(int i = 0; i < num_samples; i++){
@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
 
 	/* int num_inactive = atoi(argv[1]); */
 
-    double hz = calc_cpu_freq(6);
+    double hz = calc_cpu_freq(6, 10000000L /* 10 ms */);
 
 	
    	return 0;
